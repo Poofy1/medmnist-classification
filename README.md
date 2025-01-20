@@ -8,6 +8,7 @@ MedMNIST_Classification
 ├── data/ # Downloaded MedMNIST data 
 ├── models/ # Saved model checkpoints 
 ├── src/ 
+│ ├── evaluation.py # Evaluate and visualize model performance
 │ ├── preprocessing.py # Data loading and preprocessing 
 │ └── model.py # EfficientNet-B0 fine-tuned
 ├── train.py # Training and evaluation script
