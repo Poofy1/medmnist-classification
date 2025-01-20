@@ -6,6 +6,7 @@ from src.model import get_model
 from src.preprocessing import get_data_loaders
 import time
 from tqdm import tqdm
+import argparse
 
 def train_epoch(model, train_loader, criterion, optimizer, device):
     model.train()
@@ -64,22 +65,25 @@ def validate(model, val_loader, criterion, device):
     return avg_loss, accuracy
 
 def main():
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Train MedMNIST classifier')
+    parser.add_argument('--batch_size', type=int, default=32, help='batch size for training (default: 32)')
+    parser.add_argument('--learning_rate', type=float, default=0.001, help='learning rate (default: 0.001)')
+    parser.add_argument('--num_epochs', type=int, default=5, help='number of epochs to train (default: 1)')
+    args = parser.parse_args()
+
     # Setup
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Hyperparameters
-    batch_size = 32
-    learning_rate = 0.001
-    num_epochs = 2
-
     # Get data loaders
-    train_loader, val_loader, test_loader = get_data_loaders(batch_size)
+    train_loader, val_loader, test_loader = get_data_loaders(args.batch_size)
 
     # Initialize model, criterion, optimizer
     model = get_model(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 
     # Create directory for saving models
     save_dir = Path(__file__).parent / 'models'
@@ -87,8 +91,8 @@ def main():
 
     # Training loop
     best_val_acc = 0
-    for epoch in range(num_epochs):
-        print(f'\nEpoch [{epoch+1}/{num_epochs}]')
+    for epoch in range(args.num_epochs):
+        print(f'\nEpoch [{epoch+1}/{args.num_epochs}]')
         start_time = time.time()
         
         # Train
@@ -114,7 +118,7 @@ def main():
 
     # Final test evaluation
     print("\nEvaluating on test set...")
-    model.load_state_dict(torch.load(save_dir / 'best_model.pth'))
+    model.load_state_dict(torch.load(save_dir / 'best_model.pth', weights_only=True))
     test_loss, test_acc = validate(model, test_loader, criterion, device)
     print(f'Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.2f}%')
 

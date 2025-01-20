@@ -21,13 +21,23 @@ MedMNIST_Classification
 2. Install dependencies: `pip install -r requirements.txt`
 
 ## Usage
-Run training script: ```python train.py```
+### Run training script: ```python train.py```
 
 This will:
-  - Download the PathMNIST dataset (if not already present in `./data`).
-  - Train the model for the specified number of epochs (default: 2).
-  - Saves the best model weights in `./models/best_model.pth`.
-  - Evaluate on the test dataset using the best saved weights.
+  - Download the PathMNIST dataset (if not already present in `./data`)
+  - Train the model for the specified number of epochs
+  - Saves the best model weights in `./models/best_model.pth`
+  - Evaluate on the test dataset using the best saved weights
+
+
+### Optional Parameters
+- `--batch_size` (default: 32)
+- `--learning_rate` (default: 0.001)
+- `--num_epochs` (default: 5)
+
+Example: `python train.py --batch_size 64 --learning_rate 0.0001 --num_epochs 10`
+
+
 
 ## Results
 - Training Accuracy: 92.21%
