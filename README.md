@@ -34,8 +34,9 @@ This will:
 - `--batch_size` (default: 32)
 - `--learning_rate` (default: 0.001)
 - `--num_epochs` (default: 5)
+- `--skip_training` (flag to skip training and only evaluate using saved model)
 
-Example: `python train.py --batch_size 64 --learning_rate 0.0001 --num_epochs 10`
+Example: `python train.py --batch_size 64 --learning_rate 0.0001 --num_epochs 2`
 
 
 
