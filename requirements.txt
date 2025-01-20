@@ -2,3 +2,6 @@ medmnist
 tqdm
 torchvision
 torch
+scikit-learn
+matplotlib
+numpy

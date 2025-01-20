@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 from src.model import get_model
 from src.preprocessing import get_data_loaders
+from src.evaluation import MetricsTracker
 import time
 from tqdm import tqdm
 import argparse
@@ -70,7 +71,7 @@ def main():
     parser = argparse.ArgumentParser(description='Train MedMNIST classifier')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size for training (default: 32)')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='learning rate (default: 0.001)')
-    parser.add_argument('--num_epochs', type=int, default=5, help='number of epochs to train (default: 1)')
+    parser.add_argument('--num_epochs', type=int, default=5, help='number of epochs to train (default: 5)')
     args = parser.parse_args()
 
     # Setup
@@ -84,7 +85,12 @@ def main():
     model = get_model(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
-
+    
+    # Create directory for model results
+    results_dir = Path(__file__).parent / 'results'
+    results_dir.mkdir(exist_ok=True)
+    metrics_tracker = MetricsTracker(results_dir)
+    
     # Create directory for saving models
     save_dir = Path(__file__).parent / 'models'
     save_dir.mkdir(exist_ok=True)
@@ -102,7 +108,10 @@ def main():
         val_loss, val_acc = validate(model, val_loader, criterion, device)
         
         epoch_time = time.time() - start_time
-
+        
+        # Update metrics tracker
+        metrics_tracker.update_epoch_metrics(train_loss, val_loss, train_acc, val_acc, epoch_time)
+        
         # Print metrics
         print(f'Time: {epoch_time:.2f}s')
         print(f'Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}%')
@@ -112,6 +121,9 @@ def main():
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             torch.save(model.state_dict(), save_dir / 'best_model.pth')
+    
+    # Plot training history
+    metrics_tracker.plot_history()
 
     print("\nTraining completed!")
     print(f"Best validation accuracy: {best_val_acc:.2f}%")
@@ -119,8 +131,10 @@ def main():
     # Final test evaluation
     print("\nEvaluating on test set...")
     model.load_state_dict(torch.load(save_dir / 'best_model.pth', weights_only=True))
-    test_loss, test_acc = validate(model, test_loader, criterion, device)
+    test_loss, test_acc, test_metrics = metrics_tracker.evaluate_model(model, test_loader, criterion, device)
     print(f'Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.2f}%')
+    for metric_name, value in test_metrics.items():
+        print(f'{metric_name}: {value*100:.2f}%')
 
 if __name__ == "__main__":
     main()

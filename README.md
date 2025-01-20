@@ -39,10 +39,30 @@ Example: `python train.py --batch_size 64 --learning_rate 0.0001 --num_epochs 10
 
 
 
-## Results
-- Training Accuracy: 92.21%
-- Validation Accuracy: 97.82%
-- Test Accuracy: 91.78%
+## Model Performance Results
+
+### Training Metrics
+- Accuracy: 98.06%
+- Loss: 0.0579
+
+### Validation Metrics
+- Accuracy: 97.67%
+- Loss: 0.0684
+
+### Test Metrics
+- Accuracy: 89.71%
+- Loss: 0.3836
+- F1 Score: 86.61%
+- Precision: 87.28%
+- Recall: 87.42%
+- AUC Mean: 99.02%
+
+### Test Performance Visualizations
+![Confusion Matrix](/results/confusion_matrix.png)
+![AUC Per Class](/results/auc_per_class.png)
+![Training and Validation Loss](/results/loss.png)
+
+
 
 ## License
 
