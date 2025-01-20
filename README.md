@@ -11,15 +11,20 @@ MedMNIST_Classification
 │ ├── evaluation.py # Evaluate and visualize model performance
 │ ├── preprocessing.py # Data loading and preprocessing 
 │ └── model.py # EfficientNet-B0 fine-tuned
-├── train.py # Training and evaluation script
+├── train.py # Main execution script
 ├── requirements.txt
 └── README.md
 ```
 
-## Setup
-(Built using Python 3.8 - results may vary with other versions.)
+## Requirements
+- Python 3.8+
+- CUDA-capable GPU with 6GB+ VRAM (recommended)
+    - CUDA Toolkit installed and added to system PATH
+
+## Installation
 1. Clone the repository: `git clone https://github.com/Poofy1/medmnist-classification.git`
 2. Install dependencies: `pip install -r requirements.txt`
+
 
 ## Usage
 ### Run training script: ```python train.py```

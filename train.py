@@ -74,9 +74,14 @@ def main():
     parser.add_argument('--skip_training', action='store_true', help='skip training and evaluate existing model')
     args = parser.parse_args()
 
-    # Setup
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+    # Check GPU availability
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print(f"GPU available: {torch.cuda.get_device_name(0)}")
+        print(f"CUDA version: {torch.version.cuda}")
+    else:
+        device = torch.device("cpu")
+        print("No GPU available, using CPU instead")
 
     # Get data loaders
     train_loader, val_loader, test_loader = get_data_loaders(args.batch_size)
